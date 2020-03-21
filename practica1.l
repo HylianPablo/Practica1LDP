@@ -1,9 +1,3 @@
-%{
-   int locc = 0; // Lines Of Comment Code
-   int locp = 0; // Lines Of Code Program
-   int locw = 0; // Lines Of Code Whites
-   int locf = 0; // Lines Of Code Physical
-%}
 %option case-insensitive
 
 letra         [a-zA-Z]
@@ -17,32 +11,33 @@ cadena        \"[^"]*\"
 comentario_barras    [/][/].*
 reservada     {if|else|for|do|while|switch|case|break|try|catch|public|private|class|import|new|this}
 operando      {null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador}}
-relleno_comentario  [^\/*] 
-
-%x COMMENT CODE
-
+compl	[^*/\n]
+rell	([/]|[*]*{compl})
+intercom	[*]*[/][/][*]
+rell_com	({rell}|{intercom})
+ int locc = 0, locp = 0, locw = 0;
+%s COM
 %%
-^(\t|\x20)*(\x20|\t)*$      locw++;   // x20 es el símbolo del espacio en blanco en hexadecimal
-^{comentario_barras}        locc ++;
-^\/[*]{relleno_comentario}*[*]\/\n {BEGIN INITIAL; locc ++;}
-^\/[*]{relleno_comentario}\n  {BEGIN INITIAL; locc ++;}
-{relleno_comentario}[*]\/$     {BEGIN CODE; locc ++;}
-<INITIAL>.*|\n                        locc++;
-<CODE>.*|\n                        locp++;
-                   
+<COM>^\n	{locc++; printf("com_multi_empty ");}
+<COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
+<COM>^{rell_com}*[*][/]$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
+<COM>^{rell_com}*[*][/].*	{BEGIN INITIAL; locp++; printf("com_multi_cod");}
+^[/][/].*	{locc++; printf("com_barras ");}
+^[/][*]{rell_com}*[*]*[/]$	{locc++; printf("com_ast1 ");}
+^[/][*]{rell_com}*[*]*[/][/][/].*$	{locc++; printf("com_ast_barras");}
+^[/][*]{rell_com}*$	{BEGIN COM; locc++; printf("com_multi_ini ");}
+.*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
+.*	{locp++; printf("cod ");}
+^\n	{locw++; printf("w_empty "); /*Faltaria saber si esp blanco seria locw*/}
 %%
-int main(int argc, char *argv[]){
-    if(argc > 1){
-        yyin = fopen(argv[1], "r");
-    }else{
-        printf("Falta argumento.\n");
-        exit(1);
-    }
-    yylex();
-
-    printf("Lineas de comentarios: %d\n", locc);
-    printf("Lineas de programa: %d", locp);
-    printf("Lineas de blancos: %d", locw);
-
-    return 0;
+main( int argc, char** argv){
+	if( argc > 1 )
+		yyin = fopen (argv[1], "r");
+	else
+		yyin = stdin;
+	yylex();
+	printf("LOCC = %d\n", locc);
+	printf("LOCP = %d\n", locp);
+	printf("LOCW = %d\n", locw);
+	printf("LOCF = %d\n", locc+locp+locw);
 }
