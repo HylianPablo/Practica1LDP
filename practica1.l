@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
 
     printf("Lineas de comentarios: %d\n", locc);
     printf("Lineas de programa: %d", locp);
+    printf("Lineas de blancos: %d", locw);
 
     return 0;
 }
