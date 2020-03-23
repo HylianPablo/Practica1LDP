@@ -1,3 +1,8 @@
+%{
+#include<stdio.h>
+#include<string.h>
+#define IF 250
+%}
 %option case-insensitive
 
 letra         [a-zA-Z]
@@ -16,9 +21,12 @@ rell	([/]|[*]*{compl})
 intercom	[*][*]*[/][/][*]
 rell_com	({rell}|{intercom})
 white	(\x20|\t)
- int locc = 0, locp = 0, locw = 0;
+
+ char iff []="if";
+ int locc = 0, locp = 0, locw = 0, reservadas=0;
 %s COM
 %%
+iff	{reservadas++;printf("Reservada");} //Falla porque hay patrones más largos disponibles (linea entera como código) Diap 8
 <COM>^\n	{locc++; printf("com_multi_empty ");}
 <COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
 <COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
@@ -32,15 +40,18 @@ white	(\x20|\t)
 ^{white}*{white}*$	{locw++; printf("w_white");}
 .*	{locp++; printf("cod ");}
 %%
-main( int argc, char** argv){
+int main( int argc, char** argv){
 	if( argc > 1 )
 		yyin = fopen (argv[1], "r");
 	else
 		yyin = stdin;
-	yylex();
+    int token;
+	token = yylex();
     printf("\nResults: \n");
+    printf("Reservadas: %d\n",reservadas);
 	printf("LOCC = %d\n", locc);
 	printf("LOCP = %d\n", locp);
 	printf("LOCW = %d\n", locw);
 	printf("LOCF = %d\n", locc+locp+locw);
+	return 0;
 }
