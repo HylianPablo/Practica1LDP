@@ -28,7 +28,7 @@ rell_com	({rell}|{intercom})
 ^[/][*]{rell_com}*$	{BEGIN COM; locc++; printf("com_multi_ini ");}
 .*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
 .*	{locp++; printf("cod ");}
-^\n	{locw++; printf("w_empty "); /*Faltaria saber si esp blanco seria locw*/}
+^\n	{locw++; printf("w_empty\n"); /*Faltaria saber si esp blanco seria locw*/}
 %%
 main( int argc, char** argv){
 	if( argc > 1 )
@@ -36,6 +36,7 @@ main( int argc, char** argv){
 	else
 		yyin = stdin;
 	yylex();
+    printf("\nResults: \n");
 	printf("LOCC = %d\n", locc);
 	printf("LOCP = %d\n", locp);
 	printf("LOCW = %d\n", locw);
