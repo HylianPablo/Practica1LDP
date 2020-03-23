@@ -13,22 +13,24 @@ reservada     {if|else|for|do|while|switch|case|break|try|catch|public|private|c
 operando      {null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador}}
 compl	[^*/\n]
 rell	([/]|[*]*{compl})
-intercom	[*]*[/][/][*]
+intercom	[*][*]*[/][/][*]
 rell_com	({rell}|{intercom})
+white	(\x20|\t)
  int locc = 0, locp = 0, locw = 0;
 %s COM
 %%
 <COM>^\n	{locc++; printf("com_multi_empty ");}
 <COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
-<COM>^{rell_com}*[*][/]$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
-<COM>^{rell_com}*[*][/].*	{BEGIN INITIAL; locp++; printf("com_multi_cod");}
+<COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
+<COM>^{rell_com}*[*][*]*[/].*	{BEGIN INITIAL; locp++; printf("com_multi_cod");}
 ^[/][/].*	{locc++; printf("com_barras ");}
-^[/][*]{rell_com}*[*]*[/]$	{locc++; printf("com_ast1 ");}
-^[/][*]{rell_com}*[*]*[/][/][/].*$	{locc++; printf("com_ast_barras");}
+^[/][*]{rell_com}*[*][*]*[/]$	{locc++; printf("com_ast1 ");}
+^[/][*]{rell_com}*[*][*]*[/][/][/].*$	{locc++; printf("com_ast_barras");}
 ^[/][*]{rell_com}*$	{BEGIN COM; locc++; printf("com_multi_ini ");}
 .*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
+^\n	{locw++; printf("w_empty\n");}
+^{white}*{white}*$	{locw++; printf("w_white");}
 .*	{locp++; printf("cod ");}
-^\n	{locw++; printf("w_empty\n"); /*Faltaria saber si esp blanco seria locw*/}
 %%
 main( int argc, char** argv){
 	if( argc > 1 )
