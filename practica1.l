@@ -14,20 +14,20 @@ decimal       {digito}+({fraccion}|{exponencial})
 numero        {digito}+
 cadena        \"[^"]*\"
 comentario_barras    [/][/].*
-complejidad   {if|for|while|case|catch|&&|[|][|]|}
-op_ternario   {relleno_comentario} ? {relleno_comentario} : {relleno_comentario}
-operando      {null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador}}
+complejidad   (if|for|while|catch|[&][&]|[|][|])
+operando      (null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador})
 compl	[^*/\n]
 rell	([/]|[*]*{compl})
 intercom	[*][*]*[/][/][*]
 rell_com	({rell}|{intercom})
+op_ternario   {rell_com}[?]{rell_com}[:]{rell_com}
 white	(\x20|\t)
 
- char iff []="if";
- int locc = 0, locp = 0, locw = 0, reservadas=0; mcCabe=0;
+ int locc = 0, locp = 0, locw = 0, mcCabe=0;
 %s COM
 %%
-iff	{reservadas++;printf("Reservada");} //Falla porque hay patrones más largos disponibles (linea entera como código) Diap 8
+{white}	{mcCabe++;}
+{op_ternario}	{mcCabe++;}
 <COM>^\n	{locc++; printf("com_multi_empty ");}
 <COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
 <COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
@@ -40,21 +40,18 @@ iff	{reservadas++;printf("Reservada");} //Falla porque hay patrones más largos 
 ^\n	{locw++; printf("w_empty\n");}
 ^{white}*{white}*$	{locw++; printf("w_white");}
 .*	{locp++; printf("cod ");}
-{complejidad}|{op_ternario}     mccabe++;}
 %%
 int main( int argc, char** argv){
 	if( argc > 1 )
 		yyin = fopen (argv[1], "r");
 	else
 		yyin = stdin;
-    int token;
-	token = yylex();
+    yylex();
     printf("\nResults: \n");
-    printf("Reservadas: %d\n",reservadas);
 	printf("LOCC = %d\n", locc);
 	printf("LOCP = %d\n", locp);
 	printf("LOCW = %d\n", locw);
 	printf("LOCF = %d\n", locc+locp+locw);
-    printf("Número ciclomático = %d\n" + mcCabe);
+    printf("Número ciclomático = %d\n", mcCabe);
 	return 0;
 }
