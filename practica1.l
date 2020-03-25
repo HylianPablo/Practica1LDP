@@ -26,8 +26,6 @@ white	(\x20|\t)
  int locc = 0, locp = 0, locw = 0, mcCabe=0;
 %s COM
 %%
-{white}	{mcCabe++;}
-{op_ternario}	{mcCabe++;}
 <COM>^\n	{locc++; printf("com_multi_empty ");}
 <COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
 <COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
