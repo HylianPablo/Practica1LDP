@@ -14,7 +14,8 @@ decimal       {digito}+({fraccion}|{exponencial})
 numero        {digito}+
 cadena        \"[^"]*\"
 comentario_barras    [/][/].*
-reservada     {if|else|for|do|while|switch|case|break|try|catch|public|private|class|import|new|this}
+complejidad   {if|for|while|case|catch|&&|[|][|]|}
+op_ternario   {relleno_comentario} ? {relleno_comentario} : {relleno_comentario}
 operando      {null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador}}
 compl	[^*/\n]
 rell	([/]|[*]*{compl})
@@ -23,7 +24,7 @@ rell_com	({rell}|{intercom})
 white	(\x20|\t)
 
  char iff []="if";
- int locc = 0, locp = 0, locw = 0, reservadas=0;
+ int locc = 0, locp = 0, locw = 0, reservadas=0; mcCabe=0;
 %s COM
 %%
 iff	{reservadas++;printf("Reservada");} //Falla porque hay patrones más largos disponibles (linea entera como código) Diap 8
@@ -39,6 +40,7 @@ iff	{reservadas++;printf("Reservada");} //Falla porque hay patrones más largos 
 ^\n	{locw++; printf("w_empty\n");}
 ^{white}*{white}*$	{locw++; printf("w_white");}
 .*	{locp++; printf("cod ");}
+{complejidad}|{op_ternario}     mccabe++;}
 %%
 int main( int argc, char** argv){
 	if( argc > 1 )
@@ -53,5 +55,6 @@ int main( int argc, char** argv){
 	printf("LOCP = %d\n", locp);
 	printf("LOCW = %d\n", locw);
 	printf("LOCF = %d\n", locc+locp+locw);
+    printf("Número ciclomático = %d\n" + mcCabe);
 	return 0;
 }
