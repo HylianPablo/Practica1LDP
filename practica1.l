@@ -27,7 +27,6 @@ white	(\x20|\t)
  int locc = 0, locp = 0, locw = 0, reservadas=0; mcCabe=0;
 %s COM
 %%
-iff	{reservadas++;printf("Reservada");} //Falla porque hay patrones más largos disponibles (linea entera como código) Diap 8
 <COM>^\n	{locc++; printf("com_multi_empty ");}
 <COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
 <COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
