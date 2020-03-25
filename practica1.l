@@ -14,8 +14,8 @@ decimal       {digito}+({fraccion}|{exponencial})
 numero        {digito}+
 cadena        \"[^"]*\"
 comentario_barras    [/][/].*
-complFun	(if|for|while)
-complejidad   (catch|case|[&][&]|[|][|])
+complFun	(if|for|while|catch)
+logic   ([&][&]|[|][|])
 operando      (null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador})
 compl	[^*/\n]
 rell	([/]|[*]*{compl})
@@ -36,7 +36,9 @@ com_uni	[*][/]{rell_com}*[*][*]*[/]
 ^[/][*]{rell_com}*[*][*]*[/]$	{locc++; printf("com_ast1 ");}
 ^[/][*]{rell_com}*[*][*]*[/][/][/].*$	{locc++; printf("com_ast_barras");}
 ^[/][*]{rell_com}*$	{BEGIN COM; locc++; printf("com_multi_ini ");}
-^([^[//][/*]|{com_uni})*([}]|[{]|;)?{white}*{complFun}{white}*[(].*$	{mcCabe++; printf("if");REJECT;}
+^([^[//][/*]]|{com_uni})*([}]|[{]|;)?{white}*{complFun}{white}*([(]|[{]).*$	{mcCabe++; printf("funct");REJECT;}
+^([^[//][/*]]|{com_uni})*{white}*{logic}{white}.*$	{mcCabe++; printf("logic");REJECT;}
+^([^[//][/*]]|{com_uni})*([{]|;)?{white}*case{white}.*$	{mcCabe++; printf("case");REJECT;}
 .*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
 ^\n	{locw++; printf("w_empty\n");}
 ^{white}*{white}*$	{locw++; printf("w_white");}
