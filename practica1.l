@@ -14,7 +14,8 @@ decimal       {digito}+({fraccion}|{exponencial})
 numero        {digito}+
 cadena        \"[^"]*\"
 comentario_barras    [/][/].*
-complejidad   (if|for|while|catch|[&][&]|[|][|])
+complFun	(if|for|while)
+complejidad   (catch|case|[&][&]|[|][|])
 operando      (null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador})
 compl	[^*/\n]
 rell	([/]|[*]*{compl})
@@ -22,6 +23,7 @@ intercom	[*][*]*[/][/][*]
 rell_com	({rell}|{intercom})
 op_ternario   {rell_com}[?]{rell_com}[:]{rell_com}
 white	(\x20|\t)
+com_uni	[*][/]{rell_com}*[*][*]*[/]
 
  int locc = 0, locp = 0, locw = 0, mcCabe=0;
 %s COM
@@ -34,6 +36,7 @@ white	(\x20|\t)
 ^[/][*]{rell_com}*[*][*]*[/]$	{locc++; printf("com_ast1 ");}
 ^[/][*]{rell_com}*[*][*]*[/][/][/].*$	{locc++; printf("com_ast_barras");}
 ^[/][*]{rell_com}*$	{BEGIN COM; locc++; printf("com_multi_ini ");}
+^([^[//][/*]|{com_uni})*([}]|[{]|;)?{white}*{complFun}{white}*[(].*$	{mcCabe++; printf("if");REJECT;}
 .*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
 ^\n	{locw++; printf("w_empty\n");}
 ^{white}*{white}*$	{locw++; printf("w_white");}
