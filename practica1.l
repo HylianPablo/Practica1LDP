@@ -39,6 +39,8 @@ com_uni	[*][/]{rell_com}*[*][*]*[/]
 ^([^[//][/*]]|{com_uni})*([}]|[{]|;)?{white}*{complFun}{white}*([(]|[{]).*$	{mcCabe++; printf("funct");REJECT;}
 ^([^[//][/*]]|{com_uni})*{white}*{logic}{white}.*$	{mcCabe++; printf("logic");REJECT;}
 ^([^[//][/*]]|{com_uni})*([{]|;)?{white}*case{white}.*$	{mcCabe++; printf("case");REJECT;}
+^([^[//][/*]]|{com_uni})*{white}*{rell_com}*{op_ternario}.*$	{mcCabe++; printf("ternario");REJECT;}
+
 .*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
 ^\n	{locw++; printf("w_empty\n");}
 ^{white}*{white}*$	{locw++; printf("w_white");}
