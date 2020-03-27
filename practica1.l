@@ -26,6 +26,17 @@ white	(\x20|\t)
 com_uni	[*][/]{rell_com}*[*][*]*[/]
 
  int locc = 0, locp = 0, locw = 0, mcCabe=0;
+ void contarEspeciales(){
+	for(int i = 0; i < yyleng; i++){
+		char *palabra = yytext[i];
+		if((strcmp( palabra,"if")==0)||(strcmp( palabra,"for")==0)||(strcmp(palabra,"while")==0)||(strcmp(palabra,"catch")==0)){
+			printf("cojones");
+		}else if(strcmp(palabra,"case")==0){
+			printf("polla");
+		}
+		//falta la logica
+	}
+ }
 %s COM
 %%
 <COM>^\n	{locc++; printf("com_multi_empty ");}
@@ -51,12 +62,12 @@ int main( int argc, char** argv){
 		yyin = fopen (argv[1], "r");
 	else
 		yyin = stdin;
-    yylex();
-    printf("\nResults: \n");
+	yylex();
+	printf("\nResults: \n");
 	printf("LOCC = %d\n", locc);
 	printf("LOCP = %d\n", locp);
 	printf("LOCW = %d\n", locw);
 	printf("LOCF = %d\n", locc+locp+locw);
-    printf("Número ciclomático = %d\n", mcCabe);
+	printf("Número ciclomático = %d\n", mcCabe);
 	return 0;
 }
