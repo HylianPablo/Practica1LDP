@@ -25,37 +25,41 @@ op_ternario   {rell_com}[?]{rell_com}[:]{rell_com}
 white	(\x20|\t)
 com_uni	[*][/]{rell_com}*[*][*]*[/]
 
- int locc = 0, locp = 0, locw = 0, mcCabe=0;
- void contarEspeciales(){
-	for(int i = 0; i < yyleng; i++){
-		char *palabra = yytext[i];
-		if((strcmp( palabra,"if")==0)||(strcmp( palabra,"for")==0)||(strcmp(palabra,"while")==0)||(strcmp(palabra,"catch")==0)){
-			printf("cojones");
-		}else if(strcmp(palabra,"case")==0){
-			printf("polla");
-		}
-		//falta la logica
-	}
- }
+ int locc=0, locf=0, locp=0, locw=0, mcCabe=0;
 %s COM
+%x CIC CICCOM STRING STSIMP
 %%
-<COM>^\n	{locc++; printf("com_multi_empty ");}
-<COM>^{rell_com}*{rell_com}*$	{locc++; printf("com_multi_rell ");}
-<COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN INITIAL; locc++; printf("com_multi_end ");}
-<COM>^{rell_com}*[*][*]*[/].*	{BEGIN INITIAL; locp++; printf("com_multi_cod");}
-^[/][/].*	{locc++; printf("com_barras ");}
+<COM>^\n	{locf++; locc++; printf("com_multi_empty ");}
+<COM>^{rell_com}*{rell_com}*$	{ locc++; printf("com_multi_rell ");}
+<COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN(INITIAL); locc++; printf("com_multi_end ");}
+<COM>^{rell_com}*[*][*]*[/]	{BEGIN(INITIAL); printf("com_multi_cod");}
+^[/][/].*$	{locc++; printf("com_barras ");}
 ^[/][*]{rell_com}*[*][*]*[/]$	{locc++; printf("com_ast1 ");}
 ^[/][*]{rell_com}*[*][*]*[/][/][/].*$	{locc++; printf("com_ast_barras");}
-^[/][*]{rell_com}*$	{BEGIN COM; locc++; printf("com_multi_ini ");}
-^([^[//][/*]]|{com_uni})*([}]|[{]|;)?{white}*{complFun}{white}*([(]|[{]).*$	{mcCabe++; printf("funct");REJECT;}
-^([^[//][/*]]|{com_uni})*{white}*{logic}{white}.*$	{mcCabe++; printf("logic");REJECT;}
-^([^[//][/*]]|{com_uni})*([{]|;)?{white}*case{white}.*$	{mcCabe++; printf("case");REJECT;}
-^([^[//][/*]]|{com_uni})*{white}*{rell_com}*{op_ternario}.*$	{mcCabe++; printf("ternario");REJECT;}
-
-.*[/][*]{rell_com}*$	{BEGIN COM; locp++; printf("cod_multi_ini ");}
-^\n	{locw++; printf("w_empty\n");}
-^{white}*{white}*$	{locw++; printf("w_white");}
-.*	{locp++; printf("cod ");}
+^[/][*]{rell_com}*$	{BEGIN(COM); locc++; printf("com_multi_ini ");}
+^\n	{locf++; locw++; printf("w_empty\n");}
+^{white}*{white}*$	{locw++; printf("w_white ");}
+["]	{BEGIN(STRING); printf("iniString ");}
+[']	{BEGIN(STSIMP); printf("iniStsimp ");}
+<STRING>["]	{BEGIN(INITIAL); printf("endString ");}
+<STSIMP>[']	{BEGIN(INITIAL); printf("endStsimp ");}
+[/][/]	{BEGIN(CICCOM); printf("comDobBar ");}
+[/][*]	{BEGIN(CICCOM); printf("iniCom ");}
+<CICCOM>[*][/]	{BEGIN(INITIAL); printf("finCom ");}
+^{white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("functIni ");}
+([}]|[{]|;){white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("funct ");}
+^([^[//][/*]]|{com_uni})*{white}*{logic}{white}.*$	{mcCabe++; printf("logic ");}
+^{white}*case{white}	{mcCabe++; printf("caseIni ");}
+([{]|;){white}*case{white}	{mcCabe++; printf("case ");}
+{op_ternario}	{mcCabe++; printf("ternario ");}
+\n	{locf++; printf("+1 ");}
+<CICCOM>\n	{locf++; BEGIN(COM); printf("comentario ");}
+<STRING>\n	{locf++;}
+<STSIMP>\n	{locf++;}
+.	;
+<CICCOM>.	;
+<STRING>.	;
+<STSIMP>.	;
 %%
 int main( int argc, char** argv){
 	if( argc > 1 )
@@ -65,9 +69,9 @@ int main( int argc, char** argv){
 	yylex();
 	printf("\nResults: \n");
 	printf("LOCC = %d\n", locc);
-	printf("LOCP = %d\n", locp);
+	printf("LOCP = %d\n", locf-locc-locw);
 	printf("LOCW = %d\n", locw);
-	printf("LOCF = %d\n", locc+locp+locw);
+	printf("LOCF = %d\n", locf);
 	printf("Número ciclomático = %d\n", mcCabe);
 	return 0;
 }
