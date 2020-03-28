@@ -25,7 +25,7 @@ op_ternario   {rell_com}[?]{rell_com}[:]{rell_com}
 white	(\x20|\t)
 com_uni	[*][/]{rell_com}*[*][*]*[/]
 
- int locc=0, locf=0, locp=0, locw=0, mcCabe=0;
+ int locc=0, locf=0, locp=0, locw=0, mcCabe=1;
 %s COM
 %x CIC CICCOM STRING STSIMP
 %%
@@ -61,11 +61,15 @@ com_uni	[*][/]{rell_com}*[*][*]*[/]
 <STRING>.	;
 <STSIMP>.	;
 %%
-int main( int argc, char** argv){
-	if( argc > 1 )
+int main( int argc, char *argv[]){
+	if( argc > 1 ){
 		yyin = fopen (argv[1], "r");
-	else
-		yyin = stdin;
+	}else{
+		//yyin = stdin;
+		printf("Falta el programa.\n");
+	}	
+	
+
 	yylex();
 	printf("\nResults: \n");
 	printf("LOCC = %d\n", locc);
