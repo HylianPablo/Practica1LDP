@@ -14,6 +14,7 @@ asdf
 if (hola){
     ifam;
 }
+ a = (b>c)?b:c;
 
 System.out.println(a);
 }
