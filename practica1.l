@@ -7,7 +7,6 @@
 
 complFun	(if|for|while|catch)
 logic   ([&][&]|[|][|])
-operando      (null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador})
 compl	[^*/\n]
 rell	([/]|[*]*{compl})
 intercom	[*][*]*[/]{white}*[/][*]
