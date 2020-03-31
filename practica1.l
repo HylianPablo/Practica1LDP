@@ -5,15 +5,6 @@
 %}
 %option case-insensitive
 
-letra         [a-zA-Z]
-digito        [0-9]
-identificador {letra}({letra}|{digito})*
-fraccion      [.]{digito}+ 
-exponencial   [eE][+-]?{digito}+
-decimal       {digito}+({fraccion}|{exponencial})
-numero        {digito}+
-cadena        \"[^"]*\"
-comentario_barras    [/][/].*
 complFun	(if|for|while|catch)
 logic   ([&][&]|[|][|])
 operando      (null|boolean|true|false|int|short|double|float|long|void|{cadena}|{decimal}|{numero}|{identificador})
