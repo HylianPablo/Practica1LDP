@@ -1,4 +1,5 @@
 /*LOCC = 1, LOCP = 29, LOCW = 5, LOCF = 35, Número ciclomático = 6*/
+
 public class Prueba4 {
 
 	public static void ifwhile(int catchfor){
