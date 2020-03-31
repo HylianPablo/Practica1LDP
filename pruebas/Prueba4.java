@@ -1,8 +1,4 @@
-/*LOCC = 0
-LOCP = 22
-LOCW = 4
-LOCF = 26
-Número ciclomático = 5*/
+/*LOCC = 1 LOCP = 22 LOCW = 3 LOCF = 26 Número ciclomático = 5*/
 public class Prueba4 {
 	public static void main(String args[]) {
 		if (3 > 4) {
