@@ -176,5 +176,5 @@ $RECYCLE.BIN/
 *.pdf
 
 # Lex
-lex.yy.c
+*.yy.c
 # End of https://www.gitignore.io/api/c,flex,java,linux,macos,windows
