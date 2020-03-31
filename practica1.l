@@ -40,10 +40,12 @@ com_uni	[*][/]{rell_com}*[*][*]*[/]
 <STSIMP>.	;
 [/][*]	{BEGIN(CICCOM); printf("iniCom ");}
 <CICCOM>[*][/]	{BEGIN(INITIAL); printf("finCom ");}
+<CICCOM>[*][/]{white}*{complFun}{white}*([(]|[{])	{BEGIN(INITIAL); mcCabe++; printf("functPostComment");}
+<CICCOM>[*][/]{white}*case{white}	{BEGIN(INITIAL); mcCabe++; printf("casePostComment");}
 <CICCOM>\n	{locf++; BEGIN(COM); printf("comentario ");}
 <CICCOM>.	;
 ^{white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("functIni ");}
-([}]|[{]|;){white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("funct ");}
+([}]|[{]|;|else){white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("funct ");}
 {logic}	{mcCabe++; printf("logic ");}
 ^{white}*case{white}	{mcCabe++; printf("caseIni ");}
 ([{]|;){white}*case{white}	{mcCabe++; printf("case ");}
