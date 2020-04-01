@@ -54,13 +54,13 @@ com_uni	[*][/]{rell_com}*[*][*]*[/]
 .	;
 %%
 int main( int argc, char *argv[]){
+
 	if( argc > 1 ){
 		yyin = fopen (argv[1], "r");
 	}else{
 		fprintf(stderr, "No hay argumentos suficientes.\n");
 		exit(EXIT_FAILURE);
 	}	
-	
 
 	yylex();
 	printf("\nResultado: \n");
@@ -69,5 +69,12 @@ int main( int argc, char *argv[]){
 	printf("LOCW = %d\n", locw);
 	printf("LOCF = %d\n", locf);
 	printf("Número ciclomático = %d\n", mcCabe);
+	FILE *fp = fopen("salida.txt", "w");
+	fprintf(fp, "LOCC = %d\n", locc);
+	fprintf(fp, "LOCP = %d\n", locf-locc-locw);
+	fprintf(fp, "LOCW = %d\n", locw);
+	fprintf(fp, "LOCF = %d\n", locf);
+	fprintf(fp, "Número ciclomático = %d\n", mcCabe);
+
 	return 0;
 }
