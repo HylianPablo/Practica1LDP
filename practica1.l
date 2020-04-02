@@ -19,38 +19,38 @@ com_uni	[*][/]{rell_com}*[*][*]*[/]
 %s COM
 %x CICCOM STRING STSIMP
 %%
-<COM>^\n	{locf++; locc++; printf("com_multi_empty ");}
-<COM>^{rell_com}*{rell_com}*$	{ locc++; printf("com_multi_rell ");}
-<COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN(INITIAL); locc++; printf("com_multi_end ");}
-<COM>^{rell_com}*[*][*]*[/]	{BEGIN(INITIAL); printf("com_multi_cod");}
-^\n	{locf++; locw++; printf("w_empty\n");}
-^{white}*{white}*$	{locw++; printf("w_white ");}
-^{white}*[/][/].*$	{locc++; printf("com_barras ");}
-^{white}*[/][*]{rell_com}*[*][*]*[/]{white}*$	{locc++; printf("com_ast1 ");}
-^{white}*[/][*]{rell_com}*[*][*]*[/]{white}*[/][/].*$	{locc++; printf("com_ast_barras");}
-^{white}*[/][*]{rell_com}*$	{BEGIN(COM); locc++; printf("com_multi_ini ");}
-[/][/].*$	{printf("com_barras_post ");}
-["]	{BEGIN(STRING); printf("iniString ");}
+<COM>^\n	{locf++; locc++;}
+<COM>^{rell_com}*{rell_com}*$	{ locc++;}
+<COM>^{rell_com}*[*][*]*[/]{white}*$	{BEGIN(INITIAL); locc++;}
+<COM>^{rell_com}*[*][*]*[/]	{BEGIN(INITIAL);}
+^\n	{locf++; locw++;}
+^{white}*{white}*$	{locw++;}
+^{white}*[/][/].*$	{locc++;}
+^{white}*[/][*]{rell_com}*[*][*]*[/]{white}*$	{locc++;}
+^{white}*[/][*]{rell_com}*[*][*]*[/]{white}*[/][/].*$	{locc++;}
+^{white}*[/][*]{rell_com}*$	{BEGIN(COM); locc++;}
+[/][/].*$	;
+["]	{BEGIN(STRING);}
 <STRING>\n	{locf++;}
-<STRING>["]	{BEGIN(INITIAL); printf("endString ");}
+<STRING>["]	{BEGIN(INITIAL);}
 <STRING>.	;
-[']	{BEGIN(STSIMP); printf("iniStsimp ");}
+[']	{BEGIN(STSIMP);}
 <STSIMP>\n	{locf++;}
-<STSIMP>[']	{BEGIN(INITIAL); printf("endStsimp ");}
+<STSIMP>[']	{BEGIN(INITIAL);}
 <STSIMP>.	;
-[/][*]	{BEGIN(CICCOM); printf("iniCom ");}
-<CICCOM>[*][/]	{BEGIN(INITIAL); printf("finCom ");}
-<CICCOM>[*][/]{white}*{complFun}{white}*([(]|[{])	{BEGIN(INITIAL); mcCabe++; printf("functPostComment");}
-<CICCOM>[*][/]{white}*case{white}	{BEGIN(INITIAL); mcCabe++; printf("casePostComment");}
-<CICCOM>\n	{locf++; BEGIN(COM); printf("comentario ");}
+[/][*]	{BEGIN(CICCOM);}
+<CICCOM>[*][/]	{BEGIN(INITIAL);}
+<CICCOM>[*][/]{white}*{complFun}{white}*([(]|[{])	{BEGIN(INITIAL); mcCabe++;}
+<CICCOM>[*][/]{white}*case{white}	{BEGIN(INITIAL); mcCabe++;}
+<CICCOM>\n	{locf++; BEGIN(COM);}
 <CICCOM>.	;
-^{white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("functIni ");}
-([}]|[{]|;|else){white}*{complFun}{white}*([(]|[{])	{mcCabe++; printf("funct ");}
-{logic}	{mcCabe++; printf("logic ");}
-^{white}*case{white}	{mcCabe++; printf("caseIni ");}
-([{]|;){white}*case{white}	{mcCabe++; printf("case ");}
-{op_ternario}	{mcCabe++; printf("ternario ");}
-\n	{locf++; printf("+1 ");}
+^{white}*{complFun}{white}*([(]|[{])	{mcCabe++;}
+([}]|[{]|;|else){white}*{complFun}{white}*([(]|[{])	{mcCabe++;}
+{logic}	{mcCabe++;}
+^{white}*case{white}	{mcCabe++;}
+([{]|;){white}*case{white}	{mcCabe++;}
+{op_ternario}	{mcCabe++;}
+\n	{locf++;}
 .	;
 %%
 int main( int argc, char *argv[]){
