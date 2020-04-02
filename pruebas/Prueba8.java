@@ -1,4 +1,4 @@
-// locc 1, locw 0, locp 9, locf 10, ciclo 4
+// locc 1, locw 0, locp 10, locf 11, ciclo 4
 public class Prueba8{
 	public static void main(String[] args){
 		System.out.println("Hola ? ? ? ? ? ? ? ? ? ");
