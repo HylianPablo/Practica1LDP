@@ -2,7 +2,7 @@
 public class Prueba8{
 	public static void main(String[] args){
 		System.out.println("Hola ? ? ? ? ? ? ? ? ? ");
-		System.out.println("Que tal");
+		System.out.println("Que tal"); /* a = 0 > 1 ? 0:1;*/
 		System.out.println("a = 0 > 1 ? 0 : 1;");
 		int a;
 		a = 0 > 1 ? 0 : 1;
